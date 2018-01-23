@@ -10,6 +10,7 @@
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
           <Button mnemonicParsing="false" onAction="#toutEffacer" text="Tout effacer"/>
+          <Button mnemonicParsing="false" onAction="#calculerDistance" text="Calculer distance"/>
         </items>
       </ToolBar>
    </top>
