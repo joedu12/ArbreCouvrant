@@ -6,7 +6,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.fxml.FXMLLoader;
 
-
+/*
+ * Classe principale de l'application
+ */
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
