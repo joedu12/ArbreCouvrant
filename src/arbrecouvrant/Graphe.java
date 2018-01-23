@@ -1,33 +1,51 @@
 package arbrecouvrant;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
-public class Graphe extends Pane {
+/*
+ * Classe qui contiendra l'ensemble des points et arêtes
+ */
+public class Graphe extends StackPane {
 	   private GraphicsContext calque;
-	   private List<Sommet> dessins = new ArrayList<>();
-
+	   private ArrayList<Sommet> sommets = new ArrayList<>();
+	   
+	    /**
+	     * Ajoute un sommet à chaque clic de la souris
+	     */
 	   public Graphe() {  
 		      Canvas dessin = new Canvas(1920, 1024);
 		      calque = dessin.getGraphicsContext2D();  
 		      Sommet.setCalque(calque);
-		      setOnMouseClicked(evt -> { tracerForme(evt.getX(), evt.getY()); } );  
+		      setOnMouseClicked(evt -> { tracerSommet(evt.getX(), evt.getY()); } );
 		      getChildren().add(dessin);
 	   }
 
+	   /*
+	    * Efface le l'ensemble du graphe via un évènement onAction sur un bouton dans le FXML
+	    */
 	   public void toutEffacer() { 
 	      calque.clearRect(0, 0, getWidth(), getHeight()); 
-	      dessins.clear();
+	      sommets.clear();
 	   }
- 
-	   public void tracerForme(double x, double y) {
+	   
+	   /*
+	    * Calcule la distance entre les deux premiers sommets via un évènement onAction sur un bouton dans le FXML
+	    */
+	   public void calculDistance() {
+		   System.out.println("Distance : " + sommets.get(0).getDistance(sommets.get(1)));
+	   }
+
+	   /*
+	    * Dessine un cercle dans lequel on a son numéro
+	    */
+	   public void tracerSommet(double x, double y) {
 	      Sommet sommet = new Sommet(x, y);
-	      dessins.add(sommet);
-	      sommet.setNom("ok");
+	      sommets.add(sommet);
+	      sommet.setNom(""+sommets.size());
 	      sommet.affiche();
 	   }
 }
