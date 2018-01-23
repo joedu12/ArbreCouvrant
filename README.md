@@ -1,6 +1,7 @@
-# Théorie des Graphes : Arbre recouvrant de poids optimal
+# ThÃ©orie des Graphes : Arbre recouvrant de poids optimal
 
-Réalisation d'une application qui déroule l'algorithme de Kruskal / Prim / Sollin.
+RÃ©alisation d'une application qui dÃ©roule l'algorithme de Kruskal / Prim / Sollin.
+![Capture](https://raw.githubusercontent.com/joedu12/ArbreCouvrant/master/Capture.png)
 
 ----
 ## Inspirations possibles
