@@ -2,32 +2,69 @@ package arbrecouvrant;
 
 import java.util.ArrayList;
 
-import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 
 /*
  * Classe qui contiendra l'ensemble des points et arêtes
  */
 public class Graphe extends Pane {
 	   private ArrayList<Sommet> listSommet = new ArrayList<>();
-	   private ArrayList<Text> listText = new ArrayList<>();
-	   public static boolean isDragging;
-	   MouseGestures mg = new MouseGestures();
+	   private ArrayList<Arete>  listArete  = new ArrayList<>();
 	   
 		/**
-		 * Ajoute un sommet à chaque clic de la souris
+		 * Un graphe contiens l'ensemble des sommets et aretes 
 		 */
 	   public Graphe() {
 		   // évènement du Pane qui crée le sommet
 		   setOnMouseClicked(evt -> {
-			   if(!isDragging) {
-				   tracerSommet(evt.getX(), evt.getY());
+			   // sélectionne le Sommet (élément parrent d'un Text ou d'un Circle)
+			   Node element = evt.getPickResult().getIntersectedNode().getParent();
+			   
+			   // ajoute un sommet à chaque clic gauche
+			   if (evt.getButton() == MouseButton.PRIMARY) {
+				   if(!(element instanceof Sommet)) {
+					   tracerSommet(evt.getX(), evt.getY());
+				   }
 			   }
-		   } );
+			   
+			   // supprime un sommet à chaque clic droit
+			   if (evt.getButton() == MouseButton.SECONDARY) {
+			       if (element instanceof Sommet) {
+			           listSommet.remove(element);
+			           rafraichir();
+			       }
+			       if (evt.getPickResult().getIntersectedNode() instanceof Arete) {
+			           listArete.remove(evt.getPickResult().getIntersectedNode());
+			           rafraichir();
+			       }
+			   }
+		   });
+		   
+
+		   // Ajout une arête à chaque clic sur l'un des sommets
+		   ArrayList<Sommet> couple = new ArrayList<>();
+		   setOnMousePressed(evt -> {
+			   Node element = evt.getPickResult().getIntersectedNode().getParent();
+			   if(element instanceof Sommet) {
+				   couple.add((Sommet) element);
+			   }
+		   });
+		   
+		   setOnMouseReleased(evt -> {
+			   Node element = evt.getPickResult().getIntersectedNode().getParent();
+			   if(element instanceof Sommet) {
+				   couple.add((Sommet) element);
+				   if(couple.size() == 2) {
+					   if(couple.get(0).getNom() != couple.get(1).getNom()) {
+						   // on cherche deux sommets différents avant de tracer
+						   tracerArete(couple.get(0), couple.get(1));
+					   }
+				   }
+				   couple.clear();
+			   }
+		   });
 	   }
 
 	   /*
@@ -36,6 +73,24 @@ public class Graphe extends Pane {
 	   public void toutEffacer() {
 		  getChildren().clear(); 
 	      listSommet.clear();
+	      listArete.clear();
+	   }
+	   
+	   /*
+	    * Efface le Pane puis ré-affiche les arêtes ainsi que
+	    * l'ensemble des sommets en mettant à jour leurs noms
+	    */
+	   public void rafraichir() {
+		   getChildren().clear();
+		  
+		   for(int i=0; i<listSommet.size(); i++) {
+			   listSommet.get(i).setNom(""+i);
+			   getChildren().add(listSommet.get(i));
+		   }
+		   
+		   for(Arete arete : listArete) {
+			   getChildren().add(arete);
+		   }
 	   }
 	   
 	   /*
@@ -49,63 +104,18 @@ public class Graphe extends Pane {
 	    * Dessine un cercle dans lequel on a son numéro
 	    */
 	   public void tracerSommet(double x, double y) {
-		      Sommet sommet = new Sommet(x, y);
+		      Sommet sommet = new Sommet(x, y, ""+listSommet.size());	      
 		      listSommet.add(sommet);
-		      getChildren().addAll(sommet);	      
-		      
-		      Text text = new Text(x-5, y+3,""+listSommet.size());
-		      text.setFill(Color.RED);
-		      listText.add(text);
-		      getChildren().addAll(text);
-		      
-		      // TODO: lier text et sommet dans un overlay
-		      
-		      mg.makeDraggable(sommet);
+		      getChildren().add(sommet);
 	   }
 	   
-	    public static class MouseGestures {
-
-	        double orgSceneX, orgSceneY; // position d'origine
-	        double orgTranslateX, orgTranslateY; // position après drag'n'drop
-
-	        public void makeDraggable(Node node) {
-	            node.setOnMousePressed(sommetOnMousePressed);
-	            node.setOnMouseDragged(sommetOnMouseDragged);
-	        }
-
-	        EventHandler<MouseEvent> sommetOnMousePressed = new EventHandler<MouseEvent>() {
-	            @Override
-	            public void handle(MouseEvent evt) {
-	                orgSceneX = evt.getSceneX();
-	                orgSceneY = evt.getSceneY();
-
-	                Sommet s = ((Sommet) (evt.getSource()));
-	                orgTranslateX = s.getCenterX();
-	                orgTranslateY = s.getCenterY();
-	            }
-	        };
-
-	        EventHandler<MouseEvent> sommetOnMouseDragged = new EventHandler<MouseEvent>() {
-	            @Override
-	            public void handle(MouseEvent evt) {
-	                double offsetX = evt.getSceneX() - orgSceneX;
-	                double offsetY = evt.getSceneY() - orgSceneY;
-
-	                double newTranslateX = orgTranslateX + offsetX;
-	                double newTranslateY = orgTranslateY + offsetY;
-
-	                Sommet s = ((Sommet) (evt.getSource()));
-	                s.setCenterX(newTranslateX);
-	                s.setCenterY(newTranslateY);
-	                
-	                if(evt.getSource() instanceof Sommet) {
-	                	Graphe.isDragging = true;
-	                }
-	                else {
-	                	Graphe.isDragging = false;
-	                }
-	            }
-	        };
-
-	    }
+	   /*
+	    * Dessine une arête entre deux sommets
+	    */
+	   public void tracerArete(Sommet a, Sommet b) {
+		   Arete arete = new Arete(a, b);
+		   listArete.add(arete);
+		   getChildren().add(arete);
+		   System.out.println(a.getNom() +" lié avec "+ b.getNom() + ", poids : "+arete.getPoids());
+	   }
 }
