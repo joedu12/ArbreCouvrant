@@ -1,10 +1,10 @@
 package arbrecouvrant;
-	
+
 import javafx.application.Application;
-import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.fxml.FXMLLoader;
+import javafx.stage.Stage;
 
 /*
  * Classe principale de l'application
@@ -16,7 +16,7 @@ public class Main extends Application {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("Fenetre.fxml"));
 			
-			BorderPane root = (BorderPane) loader.load();
+			BorderPane root = loader.load();
 			Scene fenetre = new Scene(root,600,600);
 			fenetre.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
@@ -32,5 +32,5 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package arbrecouvrant;
 
 import javafx.scene.paint.Color;
@@ -10,8 +7,8 @@ import javafx.scene.shape.Line;
  * On utilise ici la classe Line
  */
 public class Arete extends Line {
-	private Sommet precedent;
-	private Sommet suivant;
+	private final Sommet precedent;
+	private final Sommet suivant;
 	private double poids;
 	
 	public Arete(Sommet a, Sommet b) {

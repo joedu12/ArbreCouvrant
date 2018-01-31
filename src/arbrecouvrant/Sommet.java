@@ -13,8 +13,8 @@ import javafx.scene.text.Text;
  */
 public class Sommet extends Group {
 	private double x, y;
-	private Circle cercle;
-	private Text texte;
+	private final Circle cercle;
+	private final Text texte;
 	
 	public Sommet(double x, double y, String nom) {
 		cercle = new Circle(x, y, 20, new Color(1, 0, 0, 0.1));

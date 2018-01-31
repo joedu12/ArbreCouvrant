@@ -1,17 +1,17 @@
 package arbrecouvrant;
 
-import java.util.ArrayList;
-
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
+
+import java.util.ArrayList;
 
 /*
  * Classe qui contiendra l'ensemble des points et arêtes
  */
 public class Graphe extends Pane {
-	   private ArrayList<Sommet> listSommet = new ArrayList<>();
-	   private ArrayList<Arete>  listArete  = new ArrayList<>();
+	   private final ArrayList<Sommet> listSommet = new ArrayList<>();
+	   private final ArrayList<Arete>  listArete  = new ArrayList<>();
 	   
 		/**
 		 * Un graphe contiens l'ensemble des sommets et aretes 
@@ -57,7 +57,7 @@ public class Graphe extends Pane {
 			   if(element instanceof Sommet) {
 				   couple.add((Sommet) element);
 				   if(couple.size() == 2) {
-					   if(couple.get(0).getNom() != couple.get(1).getNom()) {
+					   if(!couple.get(0).getNom().equals(couple.get(1).getNom())) {
 						   // on cherche deux sommets différents avant de tracer
 						   tracerArete(couple.get(0), couple.get(1));
 					   }
@@ -80,7 +80,7 @@ public class Graphe extends Pane {
 	    * Efface le Pane puis ré-affiche les arêtes ainsi que
 	    * l'ensemble des sommets en mettant à jour leurs noms
 	    */
-	   public void rafraichir() {
+	   private void rafraichir() {
 		   getChildren().clear();
 		  
 		   for(int i=0; i<listSommet.size(); i++) {
@@ -103,7 +103,7 @@ public class Graphe extends Pane {
 	   /*
 	    * Dessine un cercle dans lequel on a son numéro
 	    */
-	   public void tracerSommet(double x, double y) {
+	   private void tracerSommet(double x, double y) {
 		      Sommet sommet = new Sommet(x, y, ""+listSommet.size());	      
 		      listSommet.add(sommet);
 		      getChildren().add(sommet);
@@ -112,7 +112,7 @@ public class Graphe extends Pane {
 	   /*
 	    * Dessine une arête entre deux sommets
 	    */
-	   public void tracerArete(Sommet a, Sommet b) {
+	   private void tracerArete(Sommet a, Sommet b) {
 		   Arete arete = new Arete(a, b);
 		   listArete.add(arete);
 		   getChildren().add(arete);
