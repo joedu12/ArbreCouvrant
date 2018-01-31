@@ -10,4 +10,5 @@ Réalisation d'une application qui déroule l'algorithme de Kruskal / Prim / Sol
 
 ## Construire l'application
 Exécuter la commande : `mvn jfx:native`
+
 Le livrable se trouve ensuite dans target/jfx/native/ArbreCouvrant/.
