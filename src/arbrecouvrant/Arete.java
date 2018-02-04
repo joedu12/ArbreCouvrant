@@ -6,14 +6,14 @@ import javafx.scene.shape.Line;
 /**
  * On utilise ici la classe Line
  */
-public class Arete extends Line {
+public class Arete extends Line implements Comparable<Arete> {
 	private final Sommet precedent;
 	private final Sommet suivant;
 	private double poids;
 	
 	public Arete(Sommet a, Sommet b) {
 		super(a.getX(), a.getY(), b.getX(), b.getY());
-		setStroke(new Color(1, 0, 0, 0.1));
+		setStroke(new Color(1, 0, 0, 0.2));
 		setStrokeWidth(5);
 		
 		precedent = a;
@@ -21,7 +21,7 @@ public class Arete extends Line {
 		
 		calculerPoids();
 	}
-	
+
 	private void calculerPoids() {
 	       double dX = Math.abs(precedent.getX() - suivant.getX());
 	       double dY = Math.abs(precedent.getY() - suivant.getY());
@@ -31,4 +31,13 @@ public class Arete extends Line {
 	public double getPoids() {
 		return poids;
 	}
+
+    @Override
+    public int compareTo(Arete a2) {
+        return Double.compare(this.getPoids(), a2.getPoids());
+    }
+
+    public void marquer() {
+        setStroke(new Color(0, 1, 0, 0.2));
+    }
 }

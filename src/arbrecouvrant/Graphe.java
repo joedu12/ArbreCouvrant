@@ -1,10 +1,12 @@
 package arbrecouvrant;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /*
  * Classe qui contiendra l'ensemble des points et arêtes
@@ -94,11 +96,45 @@ public class Graphe extends Pane {
 	   }
 	   
 	   /*
-	    * Calcule la distance entre les deux premiers sommets via un évènement onAction sur un bouton dans le FXML
+	    * Trie les arêtes via un évènement onAction sur un bouton dans le FXML
 	    */
-	   public void calculDistance() {
-		   System.out.println("Distance : " + listSommet.get(0).getDistance(listSommet.get(1)));
+	   public void trierArete() {
+		   Collections.sort(listArete);
+
+           System.out.println("Arêtes triées:");
+           for(Arete arete: listArete) {
+               System.out.println(arete.getPoids());
+           }
+
 	   }
+
+        /*
+         * Exécute l'algorithme de Kruskal
+         */
+        public void execKruskal() {
+
+            // 1er étape : Marquer les arêtes
+            new Thread(() -> {
+                for(Arete arete: listArete) {
+                    try {
+                        // Attends 0.5s entre chaque marquage
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Platform.runLater(() -> {
+                        // Marque les arêtes depuis le Thread JavaFX
+                        arete.marquer();
+                        rafraichir();
+                    });
+                }
+            }).start();
+
+            // 2ème étape : Vérifier les cycles
+
+            // 3ème étape : S'arrêter quand tous les sommets ont été parcourus
+
+        }
 
 	   /*
 	    * Dessine un cercle dans lequel on a son numéro

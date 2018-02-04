@@ -8,7 +8,8 @@
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
           <Button mnemonicParsing="false" onAction="#toutEffacer" text="Tout effacer"/>
-          <Button mnemonicParsing="false" onAction="#calculerDistance" text="Calculer distance"/>
+          <Button mnemonicParsing="false" onAction="#trierArete" text="Trier les arêtes"/>
+          <Button mnemonicParsing="false" onAction="#execKruskal" text="Exécuter Kruskal"/>
       </ToolBar>
    </top>
    <center>

@@ -20,9 +20,12 @@ public class FenetreController implements Initializable {
    }
    
    @FXML
-   private void calculerDistance(ActionEvent event) {
-	   graphe.calculDistance();
+   private void trierArete(ActionEvent event) {
+	   graphe.trierArete();
    }
+
+   @FXML
+   private void execKruskal(ActionEvent event) { graphe.execKruskal(); }
    
    @Override
    public void initialize(URL url, ResourceBundle rb) {  }
