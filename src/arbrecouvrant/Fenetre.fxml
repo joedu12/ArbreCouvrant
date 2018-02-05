@@ -10,6 +10,7 @@
           <Button mnemonicParsing="false" onAction="#toutEffacer" text="Tout effacer"/>
           <Button mnemonicParsing="false" onAction="#trierArete" text="Trier les arêtes"/>
           <Button mnemonicParsing="false" onAction="#execKruskal" text="Exécuter Kruskal"/>
+          <Button mnemonicParsing="false" onAction="#execPrim" text="Exécuter Prim"/>
       </ToolBar>
    </top>
    <center>

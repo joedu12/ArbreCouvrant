@@ -26,6 +26,9 @@ public class FenetreController implements Initializable {
 
    @FXML
    private void execKruskal(ActionEvent event) { graphe.execKruskal(); }
+
+   @FXML
+   private void execPrim(ActionEvent event) { graphe.execPrim(); }
    
    @Override
    public void initialize(URL url, ResourceBundle rb) {  }

@@ -32,6 +32,9 @@ public class Arete extends Line implements Comparable<Arete> {
 		return poids;
 	}
 
+	public Sommet getPrecedent() { return precedent; }
+    public Sommet getSuivant()   { return suivant; }
+
     @Override
     public int compareTo(Arete a2) {
         return Double.compare(this.getPoids(), a2.getPoids());

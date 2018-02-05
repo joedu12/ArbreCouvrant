@@ -136,22 +136,72 @@ public class Graphe extends Pane {
 
         }
 
+    /*
+     * Exécute l'algorithme de Prim
+     */
+    public void execPrim() {
+        // 1 : Marquer le premier sommet
+        Sommet premier = listArete.get(0).getPrecedent();
+        premier.setMarque(true);
+
+        // Tant que tous les sommets ne sont pas marqués
+        while(!listSommet.stream().allMatch(Sommet::isMarque)) {
+
+            // 2.1 : Enregistrer dans une liste l'ensemble des arêtes adjacentes au premier sommet
+            ArrayList<Arete> listAreteAdjacent = new ArrayList<>();
+            for (Arete arete : listArete) {
+                if (arete.getPrecedent().equals(premier)) {
+                    listAreteAdjacent.add(arete);
+                }
+                else if (arete.getSuivant().equals(premier)) {
+                    listAreteAdjacent.add(arete);
+                }
+            }
+
+            // 2.2 : Trier les arêtes adjacentes par poids
+            Collections.sort(listAreteAdjacent);
+            Arete areteMarque = listAreteAdjacent.get(0);
+            listAreteAdjacent.clear();
+
+            // 2.3 : Marquer l'arête de poids minimal
+            areteMarque.marquer();
+
+            // 3 : Marquer son deuxième sommet
+            Sommet sommetMarque = null;
+            if(areteMarque.getPrecedent().isMarque()) {
+                sommetMarque = areteMarque.getSuivant();
+            }
+            if(areteMarque.getSuivant().isMarque()) {
+                sommetMarque = areteMarque.getPrecedent();
+            }
+            sommetMarque.setMarque(true);
+
+            // 4: Choisir un nouveau sommet non marqué
+            for(Sommet sommet: listSommet) {
+                if(!sommet.isMarque()) {
+                    premier = sommet;
+                    break;
+                }
+            }
+        }
+    }
+
 	   /*
 	    * Dessine un cercle dans lequel on a son numéro
 	    */
 	   private void tracerSommet(double x, double y) {
-		      Sommet sommet = new Sommet(x, y, ""+listSommet.size());	      
-		      listSommet.add(sommet);
-		      getChildren().add(sommet);
+            Sommet sommet = new Sommet(x, y, ""+listSommet.size());
+            listSommet.add(sommet);
+            getChildren().add(sommet);
 	   }
 	   
 	   /*
 	    * Dessine une arête entre deux sommets
 	    */
 	   private void tracerArete(Sommet a, Sommet b) {
-		   Arete arete = new Arete(a, b);
-		   listArete.add(arete);
-		   getChildren().add(arete);
-		   System.out.println(a.getNom() +" lié avec "+ b.getNom() + ", poids : "+arete.getPoids());
+            Arete arete = new Arete(a, b);
+            listArete.add(arete);
+            getChildren().add(arete);
+            System.out.println(a.getNom() + " lié avec " + b.getNom() + ", poids : " + arete.getPoids());
 	   }
 }

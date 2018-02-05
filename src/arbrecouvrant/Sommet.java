@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
  */
 public class Sommet extends Group {
 	private double x, y;
+	boolean marque;
 	private final Circle cercle;
 	private final Text texte;
 	
@@ -21,20 +22,11 @@ public class Sommet extends Group {
 		texte = new Text(x-5, y+3, nom);
 		texte.setFill(Color.RED);
 		getChildren().addAll(cercle, texte);
+		marque = false;
 		this.x = x;
 		this.y = y;
 	}
 
-	public double getDistance(Sommet autre) {
-       double dX = Math.abs(x - autre.getX());
-       double dY = Math.abs(y - autre.getY());
-       return Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
-	}
-	
-	public void setNom(String valeur) {
-		texte.setText(valeur);
-	}
-	
 	public void setX(double valeur) {
 		this.x = valeur;
 		setTranslateX(valeur);
@@ -43,6 +35,15 @@ public class Sommet extends Group {
 	public void setY (double valeur) {
 		this.y = valeur;
 		setTranslateY(valeur);
+	}
+
+    public void setNom(String valeur) {
+        texte.setText(valeur);
+    }
+
+    public void setMarque(boolean marque) {
+	    this.marque = marque;
+	    texte.setFill(Color.GREEN);
 	}
 	
 	public double getX() {
@@ -56,4 +57,6 @@ public class Sommet extends Group {
 	public String getNom() {
 		return texte.getText();
 	}
+
+    public boolean isMarque() { return marque; }
 }
