@@ -112,9 +112,11 @@ public class Graphe extends Pane {
     public void execKruskal() {
         // on démarque les arêtes et sommets
         listSommet.forEach(s -> s.setMarque(false));
-        listArete.forEach(Arete::demarquer);
+        listArete.forEach(a -> a.setMarque(false));
 
-        // 1er étape : Marquer les arêtes
+        // 1: Trier les arêtes
+        Collections.sort(listArete);
+
         new Thread(() -> {
             for(Arete arete: listArete) {
                 try {
@@ -124,17 +126,16 @@ public class Graphe extends Pane {
                     e.printStackTrace();
                 }
                 Platform.runLater(() -> {
-                    // Marque les arêtes depuis le Thread JavaFX
-                    arete.marquer();
+                    // 2 : Marquer les arêtes (depuis le Thread JavaFX)
+                    arete.setMarque(true);
                     rafraichir();
+
+                    // 3 : Vérifier les cycles
+
+                    // 4 : S'arrêter quand tous les sommets ont été parcourus
                 });
             }
         }).start();
-
-        // 2ème étape : Vérifier les cycles
-
-        // 3ème étape : S'arrêter quand tous les sommets ont été parcourus
-
     }
 
     /*
@@ -143,7 +144,7 @@ public class Graphe extends Pane {
     public void execPrim() {
         // on démarque les arêtes et sommets
         listSommet.forEach(s -> s.setMarque(false));
-        listArete.forEach(Arete::demarquer);
+        listArete.forEach(a -> a.setMarque(false));
 
         // 1 : Marquer le premier sommet
         Sommet premier = listArete.get(0).getPrecedent();
@@ -182,7 +183,7 @@ public class Graphe extends Pane {
                 listAreteAdjacent.clear();
 
                 // 2.4 : Marquer l'arête de poids minimal
-                areteMarque.marquer();
+                areteMarque.setMarque(true);
 
                 // 3 : Marquer son deuxième sommet
                 Sommet sommetMarque = null;
@@ -193,8 +194,12 @@ public class Graphe extends Pane {
                     sommetMarque = areteMarque.getPrecedent();
                 }
 
-                if(sommetMarque == null) { System.out.println("Erreur de marquage"); break;}
-                else                     { sommetMarque.setMarque(true); }
+                if(sommetMarque == null) {
+                    System.out.println("Erreur de marquage :");
+                    System.out.println(areteMarque.toString());
+                    break;
+                }
+                else { sommetMarque.setMarque(true); rafraichir(); }
             }
 
             // 4: Choisir un nouveau sommet non marqué

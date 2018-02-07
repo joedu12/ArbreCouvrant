@@ -68,4 +68,11 @@ public class Sommet extends Group implements Serializable {
         if(x == sommet.getX() && y == sommet.getY()) { return true; }
         else { return false; }
     }
+
+	@Override
+	public String toString() {
+		String statut = (marque) ? "marqué" : "non-marqué";
+		return "Sommet n°" + nom + ": ["+x+", "+y+"]"
+               + " (" + statut + ")";
+	}
 }
