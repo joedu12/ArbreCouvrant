@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import arbrecouvrant.Graphe?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.BorderPane?>
 <BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arbrecouvrant.FenetreController">
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-          <Button mnemonicParsing="false" onAction="#toutEffacer" text="Tout effacer"/>
+          <Button mnemonicParsing="false" onAction="#toutEffacer">
+              <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@../img/nouveau.png" />
+                      </image>
+                  </ImageView>
+              </graphic>
+          </Button>
+          <Button mnemonicParsing="false" onAction="#ouvrir">
+              <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@../img/ouvrir.png" />
+                      </image>
+                  </ImageView>
+              </graphic>
+          </Button>
+          <Button mnemonicParsing="false" onAction="#enregistrer">
+              <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                          <Image url="@../img/enregistrer.png" />
+                      </image>
+                  </ImageView>
+              </graphic>
+          </Button>
           <Button mnemonicParsing="false" onAction="#trierArete" text="Trier les arêtes"/>
           <Button mnemonicParsing="false" onAction="#execKruskal" text="Exécuter Kruskal"/>
           <Button mnemonicParsing="false" onAction="#execPrim" text="Exécuter Prim"/>
