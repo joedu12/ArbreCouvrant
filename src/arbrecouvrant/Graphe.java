@@ -257,18 +257,25 @@ public class Graphe extends Pane {
                 int nombre = fluxObjets.readInt();
                 for (int i=0; i<nombre; i++) {
                     Sommet sommetFic = (Sommet) fluxObjets.readObject();
-                    Sommet sommet = new Sommet(sommetFic.getX(), sommetFic.getY(), sommetFic.getNom());
-                    listSommet.add(sommet);
+                    tracerSommet(sommetFic.getX(), sommetFic.getY());
                 }
                 nombre = fluxObjets.readInt();
                 for (int i=0; i<nombre; i++) {
                     Arete areteFic = (Arete) fluxObjets.readObject();
                     Sommet a = new Sommet(areteFic.getPrecedent().getX(), areteFic.getPrecedent().getY(), areteFic.getPrecedent().getNom());
                     Sommet b = new Sommet(areteFic.getSuivant().getX(), areteFic.getSuivant().getY(), areteFic.getSuivant().getNom());
-                    Arete arete = new Arete(a, b);
-                    listArete.add(arete);
+
+                    // chercher dans listSommet la référence du nouveau sommet à ajouter
+                    for(Sommet sommet : listSommet) {
+                        if(sommet.equals(a)) {
+                            a = sommet;
+                        }
+                        if(sommet.equals(b)) {
+                            b = sommet;
+                        }
+                    }
+                    tracerArete(a, b);
                 }
-                rafraichir();
                 fluxObjets.close();
             }
             catch (Exception ex) {
