@@ -58,9 +58,7 @@ public class Arete extends Line implements Comparable<Arete>, Serializable {
     @Override
     public String toString() {
         String statut = (marque) ? "marqué" : "non-marqué";
-        return precedent.toString() + System.lineSeparator()
-               + suivant.toString() + System.lineSeparator()
-               + "Arête: ["+precedent.getNom()+" vers "+suivant.getNom()+"] "
-               + " (poids="+Math.round(poids) + ", " + statut + ")";
+        return "Arête ["+precedent.getNom()+" vers "+suivant.getNom()+"] "
+               + "(poids="+Math.round(poids) + ", " + statut + ")";
     }
 }

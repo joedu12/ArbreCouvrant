@@ -23,7 +23,7 @@ public class Graphe extends Pane {
     private Alert alerte = new Alert(Alert.AlertType.WARNING);
 
     /**
-     * Un graphe contiens l'ensemble des sommets et aretes
+     * Un graphe contiens l'ensemble des sommets et arêtes
      */
     public Graphe() {
        // évènement du Pane qui crée le sommet
@@ -101,7 +101,7 @@ public class Graphe extends Pane {
 
        System.out.println("Arêtes triées:");
        for(Arete arete: listArete) {
-           System.out.println(arete.getPoids());
+           System.out.println(arete.toString());
        }
 
     }
@@ -118,10 +118,10 @@ public class Graphe extends Pane {
         Collections.sort(listArete);
 
         new Thread(() -> {
-            for(Arete arete: listArete) {
+            for(Arete arete : listArete) {
                 try {
                     // Attends 0.5s entre chaque marquage
-                    Thread.sleep(500);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -163,6 +163,10 @@ public class Graphe extends Pane {
                     listAreteAdjacent.add(arete);
                 }
             }
+
+            // Afficher les sommets adjacents
+            //System.out.println("Adjacent à " + premier.toString() + " :");
+            //listAreteAdjacent.forEach(a -> System.out.println(a.toString()));
 
             // 2.2 : Trier les arêtes adjacentes par poids
             Collections.sort(listAreteAdjacent);
@@ -219,6 +223,7 @@ public class Graphe extends Pane {
         Sommet sommet = new Sommet(x, y, ""+listSommet.size());
         listSommet.add(sommet);
         getChildren().add(sommet);
+        System.out.println("Dessin -> "+sommet.toString());
     }
 
     /*
@@ -228,7 +233,7 @@ public class Graphe extends Pane {
         Arete arete = new Arete(a, b);
         listArete.add(arete);
         getChildren().add(arete);
-        System.out.println(a.getNom() + " lié avec " + b.getNom() + ", poids : " + arete.getPoids());
+        System.out.println("Dessin -> "+arete.toString());
     }
 
 	/*

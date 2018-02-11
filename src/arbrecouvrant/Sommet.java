@@ -72,7 +72,7 @@ public class Sommet extends Group implements Serializable {
 	@Override
 	public String toString() {
 		String statut = (marque) ? "marqué" : "non-marqué";
-		return "Sommet n°" + nom + ": ["+x+", "+y+"]"
-               + " (" + statut + ")";
+		return "Sommet n°" + nom + ": ["+x+", "+y+"]: "
+               + "(" + statut + ")";
 	}
 }
