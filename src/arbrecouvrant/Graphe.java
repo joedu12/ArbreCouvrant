@@ -142,77 +142,46 @@ public class Graphe extends Pane {
     * Exécute l'algorithme de Prim
     */
     public void execPrim() {
+        ArrayList<Arete> listAreteAdjacent = new ArrayList<>();
+
         // on démarque les arêtes et sommets
         listSommet.forEach(s -> s.setMarque(false));
         listArete.forEach(a -> a.setMarque(false));
 
         // 1 : Marquer le premier sommet
-        Sommet premier = listArete.get(0).getPrecedent();
-        premier.setMarque(true);
+        listArete.get(0).getPrecedent().setMarque(true);
 
-        // Tant que tous les sommets ne sont pas marqués
+        // 2 : Tant que tous les sommets ne sont pas marqués
         while(!listSommet.stream().allMatch(Sommet::isMarque)) {
 
-            // 2.1 : Enregistrer dans une liste l'ensemble des arêtes adjacentes au premier sommet
-            ArrayList<Arete> listAreteAdjacent = new ArrayList<>();
+            // 3 : Enregistrer dans une liste l'ensemble des arêtes adjacentes
+            listAreteAdjacent.clear();
             for (Arete arete : listArete) {
-                if (arete.getPrecedent().equals(premier)) {
-                    listAreteAdjacent.add(arete);
-                }
-                else if (arete.getSuivant().equals(premier)) {
-                    listAreteAdjacent.add(arete);
-                }
-            }
-
-            // Afficher les sommets adjacents
-            //System.out.println("Adjacent à " + premier.toString() + " :");
-            //listAreteAdjacent.forEach(a -> System.out.println(a.toString()));
-
-            // 2.2 : Trier les arêtes adjacentes par poids
-            Collections.sort(listAreteAdjacent);
-
-            // S'il n'y a pas d'arête adjacente
-            if(listAreteAdjacent.size() == 0) {
-                for (Sommet sommet : new ArrayList<>(listSommet)) {
-                    if (sommet.equals(premier)) {
-                        // On supprime le sommet
-                        listSommet.remove(sommet);
+                // on cherche une arête non marquée
+                if(!arete.isMarque()) {
+                    // ayant uniqument un seul sommet déjà marqué
+                    if((arete.getSuivant().isMarque() || arete.getPrecedent().isMarque())
+                            && !(arete.getSuivant().isMarque() && arete.getPrecedent().isMarque())){
+                        listAreteAdjacent.add(arete);
                     }
                 }
-                rafraichir();
-            }
-            else {
-                // 2.3 : On sélectionne l'arête de poids optimal
-                Arete areteMarque = listAreteAdjacent.get(0);
-                listAreteAdjacent.clear();
-
-                // 2.4 : Marquer l'arête de poids minimal
-                areteMarque.setMarque(true);
-
-                // 3 : Marquer son deuxième sommet
-                Sommet sommetMarque = null;
-                if(areteMarque.getPrecedent().isMarque()) {
-                    sommetMarque = areteMarque.getSuivant();
-                }
-                if(areteMarque.getSuivant().isMarque()) {
-                    sommetMarque = areteMarque.getPrecedent();
-                }
-
-                if(sommetMarque == null) {
-                    System.out.println("Erreur de marquage :");
-                    System.out.println(areteMarque.toString());
-                    break;
-                }
-                else { sommetMarque.setMarque(true); rafraichir(); }
             }
 
-            // 4: Choisir un nouveau sommet non marqué
-            for(Sommet sommet: listSommet) {
-                if(!sommet.isMarque()) {
-                    premier = sommet;
-                    break;
-                }
-            }
+            // 4 : Trier les arêtes adjacentes par poids
+            Collections.sort(listAreteAdjacent);
+
+            // 5 : On sélectionne l'arête de poids optimal
+            Arete areteMarque = listAreteAdjacent.get(0);
+
+            // 6 : Marquer l'arête de poids minimal
+            areteMarque.setMarque(true);
+
+            // 7 : Marquer ses sommets
+            areteMarque.getSuivant().setMarque(true);
+            areteMarque.getPrecedent().setMarque(true);
+
+            // 8 : Rafraîchir l'interface
+            rafraichir();
         }
     }
 
