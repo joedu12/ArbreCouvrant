@@ -26,83 +26,83 @@ public class Graphe extends Pane {
      * Un graphe contiens l'ensemble des sommets et arêtes
      */
     public Graphe() {
-       // évènement du Pane qui crée le sommet
-       setOnMouseClicked(evt -> {
-           // sélectionne le Sommet (élément parrent d'un Text ou d'un Circle)
-           Node element = evt.getPickResult().getIntersectedNode().getParent();
+        // évènement du Pane qui crée le sommet
+        setOnMouseClicked(evt -> {
+            // sélectionne le Sommet (élément parrent d'un Text ou d'un Circle)
+            Node element = evt.getPickResult().getIntersectedNode().getParent();
 
-           // ajoute un sommet à chaque clic gauche
-           if (evt.getButton() == MouseButton.PRIMARY) {
-               if(!(element instanceof Sommet)) {
-                   tracerSommet(evt.getX(), evt.getY());
-               }
-           }
+            // ajoute un sommet à chaque clic gauche
+            if (evt.getButton() == MouseButton.PRIMARY) {
+                if(!(element instanceof Sommet)) {
+                    tracerSommet(evt.getX(), evt.getY());
+                }
+            }
 
-           // supprime un sommet à chaque clic droit
-           if (evt.getButton() == MouseButton.SECONDARY) {
-               if (element instanceof Sommet) {
-                   listSommet.remove(element);
-                   rafraichir();
-               }
-               if (evt.getPickResult().getIntersectedNode() instanceof Arete) {
-                   listArete.remove(evt.getPickResult().getIntersectedNode());
-                   rafraichir();
-               }
-           }
-       });
+            // supprime un sommet à chaque clic droit
+            if (evt.getButton() == MouseButton.SECONDARY) {
+                if (element instanceof Sommet) {
+                    listSommet.remove(element);
+                    rafraichir();
+                }
+                if (evt.getPickResult().getIntersectedNode() instanceof Arete) {
+                    listArete.remove(evt.getPickResult().getIntersectedNode());
+                    rafraichir();
+                }
+            }
+        });
 
 
-       // Ajout une arête à chaque clic sur l'un des sommets
-       ArrayList<Sommet> couple = new ArrayList<>();
-       setOnMousePressed(evt -> {
-           Node element = evt.getPickResult().getIntersectedNode().getParent();
-           if(element instanceof Sommet) {
-               couple.add((Sommet) element);
-           }
-       });
+        // Ajout une arête à chaque clic sur l'un des sommets
+        ArrayList<Sommet> couple = new ArrayList<>();
+        setOnMousePressed(evt -> {
+            Node element = evt.getPickResult().getIntersectedNode().getParent();
+            if(element instanceof Sommet) {
+                couple.add((Sommet) element);
+            }
+        });
 
-       setOnMouseReleased(evt -> {
-           Node element = evt.getPickResult().getIntersectedNode().getParent();
-           if(element instanceof Sommet) {
-               couple.add((Sommet) element);
-               if(couple.size() == 2) {
-                   if(!couple.get(0).getNom().equals(couple.get(1).getNom())) {
-                       // on cherche deux sommets différents avant de tracer
-                       tracerArete(couple.get(0), couple.get(1));
-                   }
-               }
-               couple.clear();
-           }
-       });
+        setOnMouseReleased(evt -> {
+            Node element = evt.getPickResult().getIntersectedNode().getParent();
+            if(element instanceof Sommet) {
+                couple.add((Sommet) element);
+                if(couple.size() == 2) {
+                    if(!couple.get(0).getNom().equals(couple.get(1).getNom())) {
+                        // on cherche deux sommets différents avant de tracer
+                        tracerArete(couple.get(0), couple.get(1));
+                    }
+                }
+                couple.clear();
+            }
+        });
     }
 
     /*
-    * Efface le Pane puis ré-affiche les arêtes ainsi que
-    * l'ensemble des sommets en mettant à jour leurs noms
-    */
+     * Efface le Pane puis ré-affiche les arêtes ainsi que
+     * l'ensemble des sommets en mettant à jour leurs noms
+     */
     private void rafraichir() {
-       getChildren().clear();
+        getChildren().clear();
 
-       for(int i=0; i<listSommet.size(); i++) {
-           listSommet.get(i).setNom(""+i);
-           getChildren().add(listSommet.get(i));
-       }
+        for(int i=0; i<listSommet.size(); i++) {
+            listSommet.get(i).setNom(""+i);
+            getChildren().add(listSommet.get(i));
+        }
 
-       for(Arete arete : listArete) {
-           getChildren().add(arete);
-       }
+        for(Arete arete : listArete) {
+            getChildren().add(arete);
+        }
     }
 
     /*
-    * Trie les arêtes via un évènement onAction sur un bouton dans le FXML
-    */
+     * Trie les arêtes via un évènement onAction sur un bouton dans le FXML
+     */
     public void trierArete() {
-       Collections.sort(listArete);
+        Collections.sort(listArete);
 
-       System.out.println("Arêtes triées:");
-       for(Arete arete: listArete) {
-           System.out.println(arete.toString());
-       }
+        System.out.println("Arêtes triées:");
+        for(Arete arete: listArete) {
+            System.out.println(arete.toString());
+        }
 
     }
 
@@ -139,55 +139,68 @@ public class Graphe extends Pane {
     }
 
     /*
-    * Exécute l'algorithme de Prim
-    */
+     * Exécute l'algorithme de Prim
+     */
     public void execPrim() {
-        ArrayList<Arete> listAreteAdjacent = new ArrayList<>();
 
-        // on démarque les arêtes et sommets
-        listSommet.forEach(s -> s.setMarque(false));
-        listArete.forEach(a -> a.setMarque(false));
+        new Thread(() -> {
 
-        // 1 : Marquer le premier sommet
-        listArete.get(0).getPrecedent().setMarque(true);
+            ArrayList<Arete> listAreteAdjacent = new ArrayList<>();
 
-        // 2 : Tant que tous les sommets ne sont pas marqués
-        while(!listSommet.stream().allMatch(Sommet::isMarque)) {
+            // on démarque les arêtes et sommets
+            listSommet.forEach(s -> s.setMarque(false));
+            listArete.forEach(a -> a.setMarque(false));
 
-            // 3 : Enregistrer dans une liste l'ensemble des arêtes adjacentes
-            listAreteAdjacent.clear();
-            for (Arete arete : listArete) {
-                // on cherche une arête non marquée
-                if(!arete.isMarque()) {
-                    // ayant uniqument un seul sommet déjà marqué
-                    if((arete.getSuivant().isMarque() || arete.getPrecedent().isMarque())
-                            && !(arete.getSuivant().isMarque() && arete.getPrecedent().isMarque())){
-                        listAreteAdjacent.add(arete);
-                    }
+            // 1 : Marquer le premier sommet
+            listArete.get(0).getPrecedent().setMarque(true);
+
+            // 2 : Tant que tous les sommets ne sont pas marqués
+            while(!listSommet.stream().allMatch(Sommet::isMarque)) {
+                try {
+                    // Attends 0.5s entre chaque marquage
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                Platform.runLater(() -> {
+                    // 3 : Enregistrer dans une liste l'ensemble des arêtes adjacentes
+                    listAreteAdjacent.clear();
+                    for (Arete arete : listArete) {
+                        // on cherche une arête non marquée
+                        if(!arete.isMarque()) {
+                            // ayant uniqument un seul sommet déjà marqué
+                            if((arete.getSuivant().isMarque() || arete.getPrecedent().isMarque())
+                                    && !(arete.getSuivant().isMarque() && arete.getPrecedent().isMarque())){
+                                listAreteAdjacent.add(arete);
+                            }
+                        }
+                    }
+
+                    if (listAreteAdjacent.size() > 0) {
+                        // 4 : Trier les arêtes adjacentes par poids
+                        Collections.sort(listAreteAdjacent);
+
+                        // 5 : On sélectionne l'arête de poids optimal
+                        Arete areteMarque = listAreteAdjacent.get(0);
+
+                        // 6 : Marquer l'arête de poids minimal
+                        areteMarque.setMarque(true);
+
+                        // 7 : Marquer ses sommets
+                        areteMarque.getSuivant().setMarque(true);
+                        areteMarque.getPrecedent().setMarque(true);
+
+                        // 8 : Rafraîchir l'interface
+                        rafraichir();
+                    }
+                });
             }
-
-            // 4 : Trier les arêtes adjacentes par poids
-            Collections.sort(listAreteAdjacent);
-
-            // 5 : On sélectionne l'arête de poids optimal
-            Arete areteMarque = listAreteAdjacent.get(0);
-
-            // 6 : Marquer l'arête de poids minimal
-            areteMarque.setMarque(true);
-
-            // 7 : Marquer ses sommets
-            areteMarque.getSuivant().setMarque(true);
-            areteMarque.getPrecedent().setMarque(true);
-
-            // 8 : Rafraîchir l'interface
-            rafraichir();
-        }
+        }).start();
     }
 
     /*
-    * Dessine un cercle dans lequel on a son numéro
-    */
+     * Dessine un cercle dans lequel on a son numéro
+     */
     private void tracerSommet(double x, double y) {
         Sommet sommet = new Sommet(x, y, ""+listSommet.size());
         listSommet.add(sommet);
@@ -196,8 +209,8 @@ public class Graphe extends Pane {
     }
 
     /*
-    * Dessine une arête entre deux sommets
-    */
+     * Dessine une arête entre deux sommets
+     */
     private void tracerArete(Sommet a, Sommet b) {
         Arete arete = new Arete(a, b);
         listArete.add(arete);
@@ -205,14 +218,14 @@ public class Graphe extends Pane {
         System.out.println("Dessin -> "+arete.toString());
     }
 
-	/*
-	 * Efface le l'ensemble du graphe via un évènement onAction sur un bouton dans le FXML
-	 */
-	public void toutEffacer() {
-		getChildren().clear();
-		listSommet.clear();
-		listArete.clear();
-	}
+    /*
+     * Efface le l'ensemble du graphe via un évènement onAction sur un bouton dans le FXML
+     */
+    public void toutEffacer() {
+        getChildren().clear();
+        listSommet.clear();
+        listArete.clear();
+    }
 
 
     /*
