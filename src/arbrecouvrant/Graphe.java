@@ -1,6 +1,8 @@
 package arbrecouvrant;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.input.MouseButton;
@@ -22,6 +24,16 @@ public class Graphe extends Pane {
     // gestion des fichiers
     private FileChooser selecteur = new FileChooser();
     private Alert alerte = new Alert(Alert.AlertType.WARNING);
+
+    // gestion du mode benchmark
+    private boolean benchmark;
+    private int pause = 500;
+
+    // gestion de la barre d'état
+    private String texteBarreEtat;
+    private synchronized void setTexteBarreEtat(String t) { texteBarreEtat = t; }
+    private final SimpleStringProperty texteBarreEtatProperty = new SimpleStringProperty();
+    public StringProperty barreProperty() { return texteBarreEtatProperty;  }
 
     /**
      * Un graphe contiens l'ensemble des sommets et arêtes
@@ -93,18 +105,13 @@ public class Graphe extends Pane {
             getChildren().add(arete);
         }
     }
-
     /*
-     * Trie les arêtes via un évènement onAction sur un bouton dans le FXML
+     * Gestion de la CheckBox "benchmark"
      */
-    public void trierArete() {
-        Collections.sort(listArete);
-
-        System.out.println("Arêtes triées:");
-        for(Arete arete: listArete) {
-            System.out.println(arete.toString());
-        }
-
+    public void handleBenchmark(boolean selected) {
+        texteBarreEtatProperty.set("");
+        benchmark = selected;
+        pause = benchmark ? 0 : 500;
     }
 
     /*
@@ -120,17 +127,22 @@ public class Graphe extends Pane {
             listArete.forEach(a -> a.setMarque(false));
             listArete.forEach(a -> a.setErreur(false));
 
+            long start = System.nanoTime();
             // 1 : Marquer le premier sommet
             listArete.get(0).getPrecedent().setMarque(true);
 
             // 2 : Trier les arêtes
             Collections.sort(listArete);
+            if(!benchmark) {
+                System.out.println("Arêtes triées:");
+                listArete.forEach(a -> System.out.println(a.toString()));
+            }
 
             // 3 : Tant que tous les sommets ne sont pas marqués
             for(Arete arete : listArete) {
                 try {
                     // Attends 0.5s entre chaque marquage
-                    Thread.sleep(500);
+                    Thread.sleep(pause);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -179,10 +191,16 @@ public class Graphe extends Pane {
                         }
                     }
                     // 8 : Rafraîchir l'interface
-                    rafraichir();
+                    if(!benchmark) { rafraichir(); }
                 });
             }
+            if (benchmark) {
+                String temps = String.format("%.4f", ((System.nanoTime() - start)/1e6));
+                setTexteBarreEtat("Kruskal exécuté en : " + temps + "ms");
+            }
         }).start();
+        if (benchmark) { texteBarreEtatProperty.set(texteBarreEtat); }
+        rafraichir();
     }
 
     /*
@@ -191,13 +209,13 @@ public class Graphe extends Pane {
     public void execPrim() {
 
         new Thread(() -> {
-
             ArrayList<Arete> listAreteAdjacent = new ArrayList<>();
 
             // on démarque les arêtes et sommets
             listSommet.forEach(s -> s.setMarque(false));
             listArete.forEach(a -> a.setMarque(false));
 
+            long start = System.nanoTime();
             // 1 : Marquer le premier sommet
             listArete.get(0).getPrecedent().setMarque(true);
 
@@ -205,7 +223,7 @@ public class Graphe extends Pane {
             while(!listSommet.stream().allMatch(Sommet::isMarque)) {
                 try {
                     // Attends 0.5s entre chaque marquage
-                    Thread.sleep(500);
+                    Thread.sleep(pause);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -238,11 +256,18 @@ public class Graphe extends Pane {
                         areteMarque.getPrecedent().setMarque(true);
 
                         // 8 : Rafraîchir l'interface
-                        rafraichir();
+                        if(!benchmark) { rafraichir(); }
                     }
+
                 });
             }
+            if (benchmark) {
+                String temps = String.format("%.4f", ((System.nanoTime() - start)/1e6));
+                setTexteBarreEtat("Prim exécuté en : " + temps + "ms");
+            }
         }).start();
+        if (benchmark) { texteBarreEtatProperty.set(texteBarreEtat); }
+        rafraichir();
     }
 
     /*

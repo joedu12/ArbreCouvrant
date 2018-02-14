@@ -7,8 +7,6 @@ import javafx.scene.text.Text;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 
 /*
  * On réutilise la classe Circle :

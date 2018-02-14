@@ -4,7 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.BorderPane?>
-<BorderPane xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arbrecouvrant.FenetreController">
+<?import javafx.scene.text.Font?>
+<BorderPane xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arbrecouvrant.FenetreController">
    <top>
       <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
           <Button mnemonicParsing="false" onAction="#toutEffacer">
@@ -34,12 +35,19 @@
                   </ImageView>
               </graphic>
           </Button>
-          <Button mnemonicParsing="false" onAction="#trierArete" text="Trier les arêtes"/>
-          <Button mnemonicParsing="false" onAction="#execKruskal" text="Exécuter Kruskal"/>
-          <Button mnemonicParsing="false" onAction="#execPrim" text="Exécuter Prim"/>
+          <Button mnemonicParsing="false" onAction="#execKruskal" text="Exécuter Kruskal" />
+          <Button mnemonicParsing="false" onAction="#execPrim" text="Exécuter Prim" />
+         <CheckBox fx:id="benchmark" mnemonicParsing="false" onAction="#handleBenchmark" text="Benchmark" />
       </ToolBar>
    </top>
    <center>
       <Graphe fx:id="graphe" BorderPane.alignment="CENTER" />
    </center>
+   <bottom>
+      <Label fx:id="barreEtat" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+   </bottom>
 </BorderPane>

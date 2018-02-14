@@ -3,6 +3,8 @@ package arbrecouvrant;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,9 +17,13 @@ public class FenetreController implements Initializable {
     private Graphe graphe;
 
     @FXML
-    private void trierArete(ActionEvent event) {
-       graphe.trierArete();
-    }
+    private CheckBox benchmark;
+
+    @FXML
+    private Label barreEtat;
+
+    @FXML
+    private void handleBenchmark(ActionEvent event) { graphe.handleBenchmark(benchmark.isSelected()); }
 
     @FXML
     private void execKruskal(ActionEvent event) { graphe.execKruskal(); }
@@ -37,5 +43,7 @@ public class FenetreController implements Initializable {
     private void enregistrer(ActionEvent event)  { graphe.enregistrer(); }
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {  }
+    public void initialize(URL url, ResourceBundle rb) {
+        barreEtat.textProperty().bind(graphe.barreProperty());
+    }
 }
