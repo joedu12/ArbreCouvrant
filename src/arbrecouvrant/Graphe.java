@@ -10,6 +10,7 @@ import javafx.stage.FileChooser;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 /*
  * Classe qui contiendra l'ensemble des points et arêtes
@@ -110,29 +111,75 @@ public class Graphe extends Pane {
      * Exécute l'algorithme de Kruskal
      */
     public void execKruskal() {
-        // on démarque les arêtes et sommets
-        listSommet.forEach(s -> s.setMarque(false));
-        listArete.forEach(a -> a.setMarque(false));
-
-        // 1: Trier les arêtes
-        Collections.sort(listArete);
 
         new Thread(() -> {
+
+            // on démarque les arêtes et sommets
+            listSommet.forEach(s -> s.setMarque(false));
+            listSommet.forEach(s -> s.getListeCycle().clear());
+            listArete.forEach(a -> a.setMarque(false));
+            listArete.forEach(a -> a.setErreur(false));
+
+            // 1 : Marquer le premier sommet
+            listArete.get(0).getPrecedent().setMarque(true);
+
+            // 2 : Trier les arêtes
+            Collections.sort(listArete);
+
+            // 3 : Tant que tous les sommets ne sont pas marqués
             for(Arete arete : listArete) {
                 try {
                     // Attends 0.5s entre chaque marquage
-                    Thread.sleep(200);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 Platform.runLater(() -> {
-                    // 2 : Marquer les arêtes (depuis le Thread JavaFX)
-                    arete.setMarque(true);
+
+                    // 6 : On regarde si on peut la marquer ou si elle forme un cercle
+                    // Aucun des deux sommets n'a encore été utilisé
+                    if (arete.getPrecedent().getListeCycle().size() == 0
+                            && arete.getSuivant().getListeCycle().size() == 0) {
+                        // On marque l'arête
+                        arete.setMarque(true);
+                        // On marque les sommets et on donne un nom de cycle
+                        arete.getSuivant().setMarque(true);
+                        arete.getPrecedent().setMarque(true);
+                        arete.getSuivant().getListeCycle().add(arete.getPrecedent().getNom());
+                        arete.getPrecedent().getListeCycle().add(arete.getPrecedent().getNom());
+                    }
+                    // Les deux sommets utilisés, l'arête ne peut pas être utilisée
+                    else if (containsOne(arete.getPrecedent().getListeCycle(), arete.getSuivant().getListeCycle())){
+                        arete.setErreur(true);
+                    }
+                    // Un des deux sommets utilisé, on ajoute l'autre sommet dans le cycle
+                    else {
+                        // On marque l'arête
+                        arete.setMarque(true);
+                        // On marque les sommets
+                        arete.getSuivant().setMarque(true);
+                        arete.getPrecedent().setMarque(true);
+                        // On met à jour nos listes
+                        // Si une des deux liste est vide on lui ajoute l'autre
+                        if (arete.getPrecedent().getListeCycle().size() == 0) {
+                            arete.getPrecedent().getListeCycle().addAll(arete.getSuivant().getListeCycle());
+                        } else if (arete.getSuivant().getListeCycle().size() == 0) {
+                            arete.getSuivant().getListeCycle().addAll(arete.getPrecedent().getListeCycle());
+                        } else {
+                            HashSet<String> aChercher = arete.getPrecedent().getListeCycle();
+                            aChercher.addAll(arete.getSuivant().getListeCycle());
+                            for (Sommet sommet : listSommet) {
+                                for (String nom : aChercher) {
+                                    if (sommet.getListeCycle().contains(nom)) {
+                                        sommet.getListeCycle().addAll(aChercher);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // 8 : Rafraîchir l'interface
                     rafraichir();
-
-                    // 3 : Vérifier les cycles
-
-                    // 4 : S'arrêter quand tous les sommets ont été parcourus
                 });
             }
         }).start();
@@ -196,6 +243,22 @@ public class Graphe extends Pane {
                 });
             }
         }).start();
+    }
+
+    /*
+     * Permet de comparer deux listes, retourne vrai si au moins une chaine apparait dans les deux listes
+     */
+    private boolean containsOne(HashSet<String> list1, HashSet<String> list2) {
+
+        if (list1.size() > 0 && list2.size() > 0) {
+            for (String s1 : list1) {
+                for (String s2 : list2) {
+                    if (s1.equals(s2))
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 
     /*

@@ -6,6 +6,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 /*
  * On réutilise la classe Circle :
@@ -16,6 +19,7 @@ import java.io.Serializable;
 public class Sommet extends Group implements Serializable {
 	private double x, y;
 	private String nom;
+	private HashSet<String> listeCycle;
 	private boolean marque;
 	private transient Circle cercle;
 	private transient Text texte;
@@ -24,6 +28,7 @@ public class Sommet extends Group implements Serializable {
         this.x = x;
         this.y = y;
         this.nom = nom;
+        this.listeCycle = new HashSet<>();
         cercle = new Circle(x, y, 20, new Color(1, 0, 0, 0.1));
         texte = new Text(x - 5, y + 3, this.nom);
         texte.setFill(Color.RED);
@@ -69,10 +74,18 @@ public class Sommet extends Group implements Serializable {
         else { return false; }
     }
 
+	public HashSet<String> getListeCycle() {
+		return listeCycle;
+	}
+
+	public void setListeCycle(HashSet<String> listeCycle) {
+		this.listeCycle = listeCycle;
+	}
+
 	@Override
 	public String toString() {
 		String statut = (marque) ? "marqué" : "non-marqué";
 		return "Sommet n°" + nom + ": ["+x+", "+y+"]: "
-               + "(" + statut + ")";
+               + "(" + statut + ", cycle : " + listeCycle + ")";
 	}
 }

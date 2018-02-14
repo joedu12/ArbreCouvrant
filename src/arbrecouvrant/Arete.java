@@ -13,6 +13,7 @@ public class Arete extends Line implements Comparable<Arete>, Serializable {
     private Sommet suivant;
     private double poids;
     private boolean marque;
+    private boolean erreur;
 
     public Arete(Sommet a, Sommet b) {
         super(a.getX(), a.getY(), b.getX(), b.getY());
@@ -27,9 +28,9 @@ public class Arete extends Line implements Comparable<Arete>, Serializable {
     }
 
     private void calculerPoids() {
-           double dX = Math.abs(precedent.getX() - suivant.getX());
-           double dY = Math.abs(precedent.getY() - suivant.getY());
-           poids = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
+        double dX = Math.abs(precedent.getX() - suivant.getX());
+        double dY = Math.abs(precedent.getY() - suivant.getY());
+        poids = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
     }
 
     public double getPoids() {
@@ -55,10 +56,20 @@ public class Arete extends Line implements Comparable<Arete>, Serializable {
 
     public boolean isMarque() { return marque; }
 
+    public boolean isErreur() { return erreur; }
+
+    public void setErreur(boolean erreur) {
+        if(erreur) {
+            setStroke(new Color(0, 0, 1, 0.2));
+        } else {
+            setStroke(new Color(1, 0, 0, 0.2));
+        }
+    }
+
     @Override
     public String toString() {
         String statut = (marque) ? "marqué" : "non-marqué";
         return "Arête ["+precedent.getNom()+" vers "+suivant.getNom()+"] "
-               + "(poids="+Math.round(poids) + ", " + statut + ")";
+                + "(poids="+Math.round(poids) + ", " + statut + ")";
     }
 }
