@@ -1,14 +1,19 @@
-# Théorie des Graphes : Arbre recouvrant de poids optimal
+# Théorie des Graphes : Arbre couvrant de poids optimal
 
-Réalisation d'une application qui déroule l'algorithme de Kruskal / Prim / Sollin.
+Réalisation d'une application qui déroule l'algorithme de Kruskal et l'algorithme de Prim.
 ![Capture](https://raw.githubusercontent.com/joedu12/ArbreCouvrant/master/Capture.png)
 
 ----
-## Inspirations possibles
-* [java-algorithms-implementation](https://github.com/phishman3579/java-algorithms-implementation/blob/master/src/com/jwetherell/algorithms/graph/Kruskal.java)
-* [JavaFX-test-application](https://github.com/SoEgd/JavaFX-test-application)
-
-## Construire l'application
+## Construire
 Exécuter la commande : `mvn jfx:native`
 
-Le livrable se trouve ensuite dans target/jfx/native/ArbreCouvrant/.
+L'exécutable se trouve ensuite dans target/jfx/native/ArbreCouvrant/.
+
+## Télécharger
+Prérequis : [JRE 9](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+
+L'exécutable JAR : [ArbreCouvrant-v1.jar](https://github.com/joedu12/ArbreCouvrant/releases/download/v1.0/ArbreCouvrant-v1.jar)
+
+----
+## Conception
+![UC](https://raw.githubusercontent.com/joedu12/ArbreCouvrant/master/UC.png)
